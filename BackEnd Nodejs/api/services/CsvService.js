@@ -7,47 +7,69 @@ const appConfig = require('../config/appConfig');
 class CsvService {
   async processFiles(files, namefile, nameOutPut, typeJoin) {
     try {
-        // Traiter les fichiers CSV en parallèle
-        const results = await Promise.all(
-            files.map((file, index) => new CsvProcessingWorker(file.path, `${namefile}-${index}`).process())
+      // Validation des données d'entrée
+      if (!Array.isArray(namefile) || namefile.length !== files.length) {
+        throw new Error(
+          'Le nombre de fichiers ne correspond pas au nombre de noms fournis.'
         );
+      }
 
-        //fusionner
-        const mergedData = results.flatMap(result => result.data);
+      // Associer chaque fichier avec son nom
+      const fileNameMapping = files.map((file, index) => ({
+        filePath: file.path,
+        name: namefile[index],
+      }));
 
-        //supprimer les doublons
-        const cleanedData = removeDuplicates(mergedData);
+      // Traiter chaque fichier avec le nom associé
+      const results = await Promise.all(
+        fileNameMapping.map(({ filePath, name }) =>
+          new CsvProcessingWorker(filePath, name).process()
+        )
+      );
 
-        const finalData = results.length > 1
-            ? joinTables(results.map(result => result.data), typeJoin)
-            : cleanedData;
+      // Fusionner les données des fichiers
+      const mergedData = results.flatMap((result) => result.data);
 
-        // Création du répertoire de sortie s'il n'existe pas
-        const outputDir = path.join(__dirname, '../../', appConfig.outputDir);
+      // Supprimer les doublons
+      const cleanedData = removeDuplicates(mergedData);
 
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
-        }
+      // Effectuer un type de jointure si plusieurs fichiers sont fournis
+      const finalData =
+        results.length > 1
+          ? joinTables(results.map((result) => result.data), typeJoin)
+          : cleanedData;
 
-        //chemin du fichier CVS final
-        const finalOutputPath = path.join(outputDir, `${nameOutPut}-${finalData.length > 1 ? 'joined-cleaned' : 'cleaned'}.csv`);
+      // Créer le répertoire de sortie s'il n'existe pas
+      const outputDir = path.join(__dirname, '../../', appConfig.outputDir);
 
-        //Création du fichier CSV
-        const csvHeaders = Object.keys(finalData[0] || {}).join(';'); // Récupérer les en-têtes des colon
-        const csvRows = finalData.map(row => Object.values(row).join(';')).join('\n'); // Convertir les données en lignes CSV
-        const csvContent = `${csvHeaders}\n${csvRows}`; // Concaténer les en-têtes et les données
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
 
-        // Écriture dans le fichier
-        fs.writeFileSync(finalOutputPath, csvContent, 'utf-8');
+      // Générer le chemin du fichier de sortie
+      const finalOutputPath = path.join(
+        outputDir,
+        `${nameOutPut}-${finalData.length > 1 ? 'joined-cleaned' : 'cleaned'}.csv`
+      );
 
-        return {
-            message: results.length > 1
+      // Créer le contenu CSV
+      const csvHeaders = Object.keys(finalData[0] || {}).join(';'); // En-têtes des colonnes
+      const csvRows = finalData
+        .map((row) => Object.values(row).join(';'))
+        .join('\n'); // Lignes CSV
+      const csvContent = `${csvHeaders}\n${csvRows}`;
+
+      // Écrire dans le fichier CSV final
+      fs.writeFileSync(finalOutputPath, csvContent, 'utf-8');
+
+      return {
+        message:
+          results.length > 1
             ? 'Les fichiers ont été fusionnés et nettoyés avec succès.'
-            : 'Les fichiers ont été traités et nettoyés avec succès.',
-            finalCsvPath: finalOutputPath,
-            data: finalData,
-        };
-
+            : 'Le fichier a été traité et nettoyé avec succès.',
+        finalCsvPath: finalOutputPath,
+        data: finalData,
+      };
     } catch (error) {
       console.error('Erreur de traitement des fichiers CSV :', error);
       throw new Error('Erreur lors du traitement des fichiers CSV');
@@ -56,5 +78,3 @@ class CsvService {
 }
 
 module.exports = CsvService;
-
-

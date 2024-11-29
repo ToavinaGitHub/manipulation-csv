@@ -88,6 +88,10 @@ export class FormComponent {
     return this.addressArray.controls.map(control => control.get('namefile')?.value);
   }
 
+  getAllFileValues(): File[] {
+    return this.addressArray.controls.map(control => control.get('file')?.value);
+  }
+
   // Méthode pour récupérer une seule valeur de namefile par index
   getNameFileValue(index: number): string | null {
     const control = this.addressArray.at(index).get('namefile');
@@ -96,22 +100,26 @@ export class FormComponent {
 
   // Soumettre le formulaire
   uploadFile(): void {
-    if (!this.file) {
-      this.message = 'Veuillez sélectionner un fichier avant de continuer.';
-      this.messageType = 'error';
-      return;
-    }
-
     const formData = new FormData();
-    formData.append('file', this.file, this.file.name);
+
+    // Ajout des champs du formulaire
     formData.append('nameOutPut', this.userForm.get('nameOutPut')?.value);
     formData.append('typeJoin', this.userForm.get('typeJoin')?.value);
 
-    // Ajouter toutes les valeurs de namefile au FormData
-    const namefileValues = this.getAllNameFileValues();
-    namefileValues.forEach((value, index) => {
-      formData.append(`namefile[${index}]`, value);
+    // Ajout des fichiers et noms associés
+    this.addressArray.controls.forEach((control, index) => {
+      const file = control.get('file')?.value;
+      const namefile = control.get('namefile')?.value;
+
+      if (file && namefile) {
+        formData.append('file', file, file.name); // Ajout des fichiers
+        formData.append(`namefile[${index}]`, namefile); // Ajout des noms de fichiers
+      }
     });
+
+    console.log('formData', formData);
+
+    // Envoi des données
     this.csvUploadService.uploadCsv(formData).subscribe(
       (response: any) => {
         this.message = 'Fichier téléversé avec succès.';

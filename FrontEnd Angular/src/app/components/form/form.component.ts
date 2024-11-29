@@ -117,6 +117,7 @@ export class FormComponent {
       }
     });
 
+
     console.log('formData', formData);
 
     // Envoi des données

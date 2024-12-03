@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { CsvUploadService } from '../../services/csv/file-upload.service';
 import { ChangeDetectorRef } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'my-form',
@@ -11,9 +12,7 @@ export class FormComponent {
   name = 'Manipulation CSV';
   public userForm: FormGroup;
   file: File | null = null;
-  message: string = '';
   downloadLink: string | null = null;
-  messageType: 'success' | 'error' | '' = '';
 
   constructor(
     private _fb: FormBuilder,
@@ -117,27 +116,36 @@ export class FormComponent {
       }
     });
 
-
     console.log('formData', formData);
 
     // Envoi des données
     this.csvUploadService.uploadCsv(formData).subscribe(
       (response: any) => {
-        this.message = 'Fichier téléversé avec succès.';
-        this.messageType = 'success';
         this.downloadLink = response.finalCsvPath;
+
+        // Afficher une alerte SweetAlert en cas de succès
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Fichier téléversé avec succès!',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
       },
       (error) => {
         console.error('Erreur:', error);
-        this.message = 'Échec du téléversement.';
-        this.messageType = 'error';
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: 'Échec du téléversement.',
+          text: error?.message || 'Une erreur est survenue.',
+          showConfirmButton: true,
+        });
       }
     );
   }
 
-  // Fermer les alertes
-  closeAlert(): void {
-    this.message = '';
-    this.messageType = '';
-  }
 }
+
+

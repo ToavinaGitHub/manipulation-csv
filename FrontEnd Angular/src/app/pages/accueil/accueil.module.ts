@@ -5,17 +5,19 @@ import { AccueilComponent } from './accueil.component';
 import { AccueilRoutingModule } from './accueil-routing.module';
 import { FormComponent } from '../../components/form/form.component';
 import { CommonModule } from '@angular/common';
+import { ListeCSVComponent } from '../../components/liste-csv/liste-csv.component';
 @NgModule({
-    imports:      [ 
-        BrowserModule, 
-        FormsModule, 
+    imports: [
+        BrowserModule,
+        FormsModule,
         ReactiveFormsModule,
-        AccueilRoutingModule
+        AccueilRoutingModule,
     ],
-    declarations: [ 
+    declarations: [
         AccueilComponent,
-        FormComponent
+        FormComponent,
+        ListeCSVComponent
     ],
 
 })
-export class AcceuilModule  { }
+export class AcceuilModule { }

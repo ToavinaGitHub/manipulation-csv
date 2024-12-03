@@ -27,8 +27,7 @@ class FileUploadMiddleware {
     return multer.diskStorage({
       destination: (req, file, cb) => cb(null, this.uploadDir),
       filename: (req, file, cb) => {
-        const customName = `${req.body.uploadFile || 'default'}-${Date.now()}-${file.originalname}`;
-        cb(null, customName);
+        const customName = `${req.body.uploadFile || 'default'}-${new Date().toLocaleDateString('fr-FR').replace(/\//g, '-')}-${file.originalname}`;        cb(null, customName);
       },
     });
   }

@@ -1,0 +1,48 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">Liste des fichiers</h2>
+
+  <!-- Boutons pour charger les fichiers -->
+  <div class="mb-4">
+    <!-- <button (click)="loadFiles('tous')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">
+      Afficher tous les fichiers
+    </button> -->
+    <button (click)="loadFiles('upload')" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mr-2">
+      Fichiers Upload
+    </button>
+    <button (click)="loadFiles('output')" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+      Fichiers Output
+    </button>
+  </div>
+
+ <!-- Table des fichiers -->
+  <table *ngIf="files.length > 0" class="min-w-full table-auto border-collapse border border-gray-300">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="px-4 py-2 border-b text-left">Nom</th>
+        <th class="px-4 py-2 border-b text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Afficher les fichiers -->
+      <tr *ngFor="let file of files" class="odd:bg-gray-50">
+        <td class="px-4 py-2 border-b">{{ file }}</td>
+        <td class="px-4 py-2 border-b flex space-x-2">
+          <!-- Bouton Télécharger -->
+          <button (click)="downloadFile(fileType, file)" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Télécharger
+          </button>
+          <!-- Bouton Supprimer -->
+          <button (click)="deleteFile(file)" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+            Supprimer
+          </button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Message si aucun fichier n'est disponible -->
+  <div *ngIf="files.length === 0" class="mt-4">
+    <p class="text-gray-500">Aucune donnée disponible.</p>
+  </div>
+</div>

@@ -10,23 +10,23 @@ import { CsvUploadService } from './services/csv/file-upload.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-    imports:      [ 
-        BrowserModule, 
-        FormsModule, 
+    imports: [
+        BrowserModule,
+        FormsModule,
         ReactiveFormsModule,
         AppRoutingModule,
         HttpClientModule
     ],
-    declarations: [ 
-        AppComponent, 
+    declarations: [
+        AppComponent,
     ],
-    bootstrap:    [ 
-        AppComponent 
+    bootstrap: [
+        AppComponent
     ],
-    schemas:      [
+    schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],
-    providers: [ 
+    providers: [
         CsvUploadService  // Ajouter le service ici
     ],
 })

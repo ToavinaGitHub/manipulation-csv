@@ -1,12 +1,12 @@
 {
   "name": "backendmanipulationcsv",
   "version": "1.0.0",
-  "main": "api/index.js",
+  "main": "index.js",
   "engines": {
     "node": "22.x"
   },
   "scripts": {
-    "start": "node api/index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

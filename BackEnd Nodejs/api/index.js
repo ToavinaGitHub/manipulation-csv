@@ -9,7 +9,7 @@ const app = express();
 app.use(cors({
   origin: '*', // Autorise uniquement les requêtes venant de ce domaine
   methods: 'GET,POST,PUT,DELETE', // Méthodes autorisées
-  allowedHeaders: 'Content-Type,Authorization', // En-têtes autorisés
+  allowedHeaders: 'Content-Type', // En-têtes autorisés
 }));
 
 // Middleware pour gérer les données JSON et les formulaires

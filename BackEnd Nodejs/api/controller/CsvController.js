@@ -158,6 +158,14 @@ class CsvController {
       res.status(500).json({ message: error.message });
     }
   }
+  async url(req, res){
+
+    console.log('aaaaaaa');
+    res.status(300).json("dssssss");
+
+
+  }
 }
+
 
 module.exports = new CsvController();

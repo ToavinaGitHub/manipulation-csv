@@ -10,6 +10,7 @@ router.post('/upload', fileUploadMiddleware.getMiddleware().array('file', 10), C
 
 // Route pour récupérer la liste des fichiers uploadés
 router.get('/getFile', CsvController.getUploadedFiles);
+router.get('/url', CsvController.url);
 
 // Route pour télécharger un fichier
 router.get('/download/:type/:fileName', CsvController.downloadFile);

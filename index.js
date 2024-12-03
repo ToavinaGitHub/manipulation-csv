@@ -7,9 +7,9 @@ const app = express();
 
 // Configuration de CORS
 app.use(cors({
-  origin: '*', // Autorise uniquement les requêtes venant de ce domaine
-  methods: 'GET,POST,PUT,DELETE', // Méthodes autorisées
-  allowedHeaders: 'Content-Type', // En-têtes autorisés
+  origin: '*',
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type',
 }));
 
 // Middleware pour gérer les données JSON et les formulaires
@@ -19,10 +19,5 @@ app.use(express.urlencoded({ extended: true }));
 // Route d'upload
 app.use('/api', uploadRoutes);
 
-// Démarrer le serveur
-const PORT = process.env.PORT || 9002;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-
+// Exportez votre app pour Vercel
+module.exports = app;
